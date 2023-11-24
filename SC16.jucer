@@ -7,6 +7,7 @@
               pluginFormats="buildVST3" pluginVST3Category="Fx,Reverb" cppLanguageStandard="latest">
   <MAINGROUP id="qP0m10" name="SCS16">
     <GROUP id="{E1E02736-8668-1996-FF6D-24B330371255}" name="Source">
+      <FILE id="Cv2UV8" name="guiBack_1.jpg" compile="0" resource="1" file="Source/GUI/guiBack_1.jpg"/>
       <GROUP id="{7E3122B4-1E32-5898-EA8D-AC6CD01D4A80}" name="IRs">
         <FILE id="VZ3gqi" name="ambience.wav" compile="0" resource="1" file="Source/Impulses/ambience.wav"/>
         <FILE id="b96T2r" name="hall.wav" compile="0" resource="1" file="Source/Impulses/hall.wav"/>

@@ -26,8 +26,8 @@ SC16AudioProcessorEditor::SC16AudioProcessorEditor (SC16AudioProcessor& p)
     addAndMakeVisible(gainLabel);
     gainLabel.setLookAndFeel(&otherLookandFeel);
     gainLabel.attachToComponent(&gainSlider, false);
-    gainLabel.setText("Gain", juce::dontSendNotification);
-    gainLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    gainLabel.setText("in", juce::dontSendNotification);
+    gainLabel.setColour(juce::Label::textColourId, juce::Colours::lightgrey);
     juce::Font gainfont = gainLabel.getFont();
     gainfont.setHeight(20.0f);
     gainfont.setBold(true);
@@ -39,6 +39,7 @@ SC16AudioProcessorEditor::SC16AudioProcessorEditor (SC16AudioProcessor& p)
     // mix slider
     addAndMakeVisible(mixSlider);
     mixSlider.setLookAndFeel(&otherLookandFeel);
+    
     mixSlider.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     mixSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 200, 25);
     mixSlider.setTextValueSuffix(" %");
@@ -52,8 +53,8 @@ SC16AudioProcessorEditor::SC16AudioProcessorEditor (SC16AudioProcessor& p)
     addAndMakeVisible(mixLabel);
     mixLabel.setLookAndFeel(&otherLookandFeel);
     mixLabel.attachToComponent(&mixSlider, false);
-    mixLabel.setText("Mix", juce::dontSendNotification);
-    mixLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    mixLabel.setText("mix", juce::dontSendNotification);
+    mixLabel.setColour(juce::Label::textColourId, juce::Colours::lightgrey);
     juce::Font mixfont = mixLabel.getFont();
     mixfont.setHeight(20.0f);
     mixfont.setBold(true);
@@ -193,14 +194,14 @@ void SC16AudioProcessorEditor::paint (juce::Graphics& g)
     g.setFont(16.0f);
     g.drawFittedText("SCS16 V1 - RJBaldwin", getLocalBounds(), juce::Justification::centredTop, 1);
 
-    //auto background = juce::ImageCache::getFromMemory(BinaryData::guiBack1_jpg, BinaryData::guiBack1_jpgSize);
-   // g.drawImageWithin(background, 0, 0, getWidth(), getHeight(), juce::RectanglePlacement::doNotResize);
+    auto background = juce::ImageCache::getFromMemory(BinaryData::guiBack_1_jpg, BinaryData::guiBack_1_jpgSize);
+    g.drawImageWithin(background, 0, 0, getWidth(), getHeight(), juce::RectanglePlacement::doNotResize);
 }
 
 void SC16AudioProcessorEditor::resized()
 {
     // combo box
-    irMenu.setBounds(145, 300, 120, 25);
+    irMenu.setBounds(30, 150, 140, 25);
 
     // gain slider
     gainSlider.setBounds(50, 300, 80, 80);
@@ -209,8 +210,8 @@ void SC16AudioProcessorEditor::resized()
     mixSlider.setBounds(280, 300, 80, 80);
 
     // level meter
-    verticalDiscreteMeterL.setBounds(180, 80, 25, 200);
-    verticalDiscreteMeterR.setBounds(215, 80, 25, 200);
+    verticalDiscreteMeterL.setBounds(180, 280, 20, 100);
+    verticalDiscreteMeterR.setBounds(215, 280, 20, 100);
 
     // info button
     infoButton.setBounds(370, 350, 30, 30);

@@ -230,7 +230,7 @@ void SC16AudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 
     //*************************
     // Extract the value of "IRCHOICE" parameter
-    int irChoice = treeState.getRawParameterValue("IRCHOICE")->load();
+    int irChoice = treeState.getRawParameterValue("ALGORITHM")->load();
 
     // Call the loadIRbinary function based on the extracted value
 

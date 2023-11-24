@@ -8,6 +8,9 @@
 
 namespace BinaryData
 {
+    extern const char*   guiBack_1_jpg;
+    const int            guiBack_1_jpgSize = 22133;
+
     extern const char*   ambience_wav;
     const int            ambience_wavSize = 1590034;
 
@@ -33,7 +36,7 @@ namespace BinaryData
     const int            room_wavSize = 1638190;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 8;
+    const int namedResourceListSize = 9;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

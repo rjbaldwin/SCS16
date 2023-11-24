@@ -24,7 +24,7 @@ namespace Gui
 			const auto side = juce::jmin(bounds.getWidth(), bounds.getHeight());
 			const auto bulbFillBounds = juce::Rectangle<float>{ bounds.getX(), bounds.getY(), side, side };
 			g.fillEllipse(bulbFillBounds);
-			g.setColour(juce::Colours::black);
+			g.setColour(juce::Colours::darkgrey);
 			g.drawEllipse(bulbFillBounds, 1.f);
 			if (isOn)
 			{
@@ -62,8 +62,8 @@ namespace Gui
 		void resized() override
 		{
 			const auto bounds = getLocalBounds().toFloat();
-			juce::ColourGradient gradient{ juce::Colours::lightblue, bounds.getBottomLeft(), juce::Colours::blueviolet, bounds.getTopLeft(), false };
-			gradient.addColour(0.3, juce::Colours::violet);
+			juce::ColourGradient gradient{ juce::Colours::green, bounds.getBottomLeft(), juce::Colours::red, bounds.getTopLeft(), false };
+			gradient.addColour(0.3, juce::Colours::yellow);
 
 			const auto bulbHeight = getLocalBounds().getHeight() / totalNumberOfBulbs;
 			auto bulbBounds = getLocalBounds();
@@ -85,6 +85,6 @@ namespace Gui
 	private:
 		std::function<float()> valueSupplier;
 		std::vector<std::unique_ptr<Bulb>> bulbs;
-		const int totalNumberOfBulbs = 10;
+		const int totalNumberOfBulbs = 4;
 	};
 }
