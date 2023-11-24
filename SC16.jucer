@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="Ywsl05" name="SCS16" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              companyName="Supercoiled Samples" companyCopyright="2023 Supercoiled Samples"
+              companyWebsite="www.rjbaldwin.com" companyEmail="info@rjbaldwin.com"
+              pluginFormats="buildVST3" pluginVST3Category="Fx,Reverb" cppLanguageStandard="latest">
+  <MAINGROUP id="qP0m10" name="SCS16">
+    <GROUP id="{E1E02736-8668-1996-FF6D-24B330371255}" name="Source">
+      <GROUP id="{7E3122B4-1E32-5898-EA8D-AC6CD01D4A80}" name="IRs">
+        <FILE id="VZ3gqi" name="ambience.wav" compile="0" resource="1" file="Source/Impulses/ambience.wav"/>
+        <FILE id="b96T2r" name="hall.wav" compile="0" resource="1" file="Source/Impulses/hall.wav"/>
+        <FILE id="agLrcR" name="hall2.wav" compile="0" resource="1" file="Source/Impulses/hall2.wav"/>
+        <FILE id="KnOQqC" name="nonlin.wav" compile="0" resource="1" file="Source/Impulses/nonlin.wav"/>
+        <FILE id="y95npE" name="plate.wav" compile="0" resource="1" file="Source/Impulses/plate.wav"/>
+        <FILE id="ujvIFL" name="plate2.wav" compile="0" resource="1" file="Source/Impulses/plate2.wav"/>
+        <FILE id="SEtVl6" name="reversed.wav" compile="0" resource="1" file="Source/Impulses/reversed.wav"/>
+        <FILE id="J6lcMh" name="room.wav" compile="0" resource="1" file="Source/Impulses/room.wav"/>
+      </GROUP>
+      <FILE id="MrmArn" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="MBnpr2" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="HQFPHh" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="jExOcH" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <VS2022 targetFolder="Builds/VisualStudio2022">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="SCS16" enablePluginBinaryCopyStep="1"
+                       vst3BinaryLocation="E:\07_Dev\PluginTestEnvironment"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="SCS16" enablePluginBinaryCopyStep="1"
+                       vst3BinaryLocation="E:\07_Dev\PluginTestEnvironment"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="C:/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2022>
+  </EXPORTFORMATS>
+</JUCERPROJECT>
