@@ -25,6 +25,12 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="jExOcH" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <GROUP id="{117A7A55-5E38-93D3-98A7-0EA29895DE48}" name="Component">
+      <FILE id="ie5fr5" name="HorizontalMeter.h" compile="0" resource="0"
+            file="Source/Component/HorizontalMeter.h"/>
+      <FILE id="MRvPnY" name="VerticalDiscreteMeter.h" compile="0" resource="0"
+            file="Source/Component/VerticalDiscreteMeter.h"/>
+    </GROUP>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

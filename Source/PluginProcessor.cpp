@@ -12,13 +12,22 @@ SC16AudioProcessor::SC16AudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+    treeState{ *this,nullptr,"PARAMETERS", createParameterLayout() }
+
 #endif
 {
+    treeState.addParameterListener("GAIN", this);
+    treeState.addParameterListener("MIX", this);
+    treeState.addParameterListener("ALGORITHM", this);
 }
 
 SC16AudioProcessor::~SC16AudioProcessor()
 {
+  
+    treeState.removeParameterListener("GAIN", this);
+    treeState.removeParameterListener("MIX", this);
+    treeState.removeParameterListener("ALGORITHM", this);
 }
 
 //==============================================================================
@@ -83,11 +92,19 @@ void SC16AudioProcessor::changeProgramName (int index, const juce::String& newNa
 {
 }
 
+
+
 //==============================================================================
 void SC16AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.sampleRate = sampleRate;
+    spec.numChannels = getTotalNumInputChannels();
+
+    irLoader.reset();
+    irLoader.prepare(spec);
+
+    mix = juce::jmap(treeState.getRawParameterValue("MIX")->load(), 0.0f, 100.f, 0.0f, 1.0f);
 }
 
 void SC16AudioProcessor::releaseResources()
@@ -122,33 +139,63 @@ bool SC16AudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) con
 }
 #endif
 
+
+
+// ****************************************************************************
+// **********************PROCESS BLOCK ****************************************
+// ****************************************************************************
+
 void SC16AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
+    juce::dsp::AudioBlock<float>block{ buffer };
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
+    juce::dsp::DryWetMixer<float>wetDryMixer;
+    float wetDryValue = *treeState.getRawParameterValue("MIX") / 100.0f;
+
+    wetDryMixer.setMixingRule(juce::dsp::DryWetMixingRule::linear);
+    wetDryMixer.setWetMixProportion(wetDryValue);
+    wetDryMixer.setWetLatency(0.0);
+
+    wetDryMixer.prepare(spec);
+
+
+    // the dry buffer
+    wetDryMixer.pushDrySamples(buffer);
+
+    // for IR loader
+    if (irLoader.getCurrentIRSize() > 0)
+    {
+        irLoader.process(juce::dsp::ProcessContextReplacing<float>(block));
+    }
+
+    // the wet buffer
+    wetDryMixer.mixWetSamples(block);
+
+    // for output gain
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        auto* data = buffer.getWritePointer(channel);
 
-        // ..do something to the data...
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        {
+            auto input = data[sample];
+            float output;
+
+            data[sample] = buffer.getSample(channel, sample) * rawVolume;
+
+        }
     }
+
+
+    // for level meters
+    rmsLevelLeft = juce::Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
+    rmsLevelRight = juce::Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
+
+
 }
 
 //==============================================================================
@@ -165,16 +212,129 @@ juce::AudioProcessorEditor* SC16AudioProcessor::createEditor()
 //==============================================================================
 void SC16AudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    auto state = treeState.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    copyXmlToBinary(*xml, destData);
 }
 
 void SC16AudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName(treeState.state.getType()))
+            treeState.replaceState(juce::ValueTree::fromXml(*xmlState));
+
+    // Debug command to print XML content
+    DBG("XML Content:\n" << xmlState->toString());
+
+    //*************************
+    // Extract the value of "IRCHOICE" parameter
+    int irChoice = treeState.getRawParameterValue("IRCHOICE")->load();
+
+    // Call the loadIRbinary function based on the extracted value
+
+    // Adjust the ComboBox ID to match ValueTree state index
+    int adjustedId = irChoice + 1;
+
+
+    switch (adjustedId)
+    {
+    case 1:
+        irLoader.reset();
+        break;
+    case 2:
+        loadIRbinary("ambience_wav", BinaryData::ambience_wavSize, BinaryData::ambience_wavSize);
+        break;
+    case 3:
+        loadIRbinary("hall_wav", BinaryData::hall_wavSize, BinaryData::hall_wavSize);
+        break;
+    case 4:
+        loadIRbinary("hall2_wav", BinaryData::hall2_wavSize, BinaryData::hall2_wavSize);
+        break;
+    case 5:
+        loadIRbinary("nonlin_wav", BinaryData::nonlin_wavSize, BinaryData::nonlin_wavSize);
+        break;
+    case 6:
+        loadIRbinary("plate_wav", BinaryData::plate_wavSize, BinaryData::plate_wavSize);
+        break;
+    case 7:
+        loadIRbinary("plate2_wav", BinaryData::plate2_wavSize, BinaryData::plate2_wavSize);
+        break;
+    case 8:
+        loadIRbinary("reversed_wav", BinaryData::reversed_wavSize, BinaryData::reversed_wavSize);
+        break;
+    case 9:
+        loadIRbinary("room_wav", BinaryData::room_wavSize, BinaryData::room_wavSize);
+        break;
+    default:
+        break;
+    }
+
 }
+
+
+juce::AudioProcessorValueTreeState::ParameterLayout SC16AudioProcessor::createParameterLayout()
+{
+
+
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+
+    auto gainParam = std::make_unique<juce::AudioParameterFloat>("GAIN", "Gain", -48.0f, 0.0f, -10.0f);
+    params.push_back(std::move(gainParam));
+
+    auto mixParam = std::make_unique<juce::AudioParameterFloat>("MIX", "Mix", 0.f, 100.0f, 20.0f);
+    params.push_back(std::move(mixParam));
+
+    auto comboParams = std::make_unique<juce::AudioParameterChoice>("ALGORITHM", "Algorithm", juce::StringArray("No Algorithm Loaded!",
+        "Ambience",
+        "Hall",
+        "Hall2",
+        "NonLin",
+        "Plate",
+        "Plate2",
+        "Reversed",
+        "Room"), 0);
+    params.push_back(std::move(comboParams));
+
+
+
+    return { params.begin(), params.end() };
+}
+
+void SC16AudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+
+    mix = juce::jmap(treeState.getRawParameterValue("MIX")->load(), 0.0f, 100.f, 0.0f, 1.0f);
+
+
+}
+
+float SC16AudioProcessor::getRMSValue(const int channel) const
+{
+    jassert(channel == 0 || channel == 1);
+    if (channel == 0)
+        return rmsLevelLeft;
+    if (channel == 1)
+        return rmsLevelRight;
+    return 0.f;
+}
+
+
+
+// IR Binary loader
+
+void SC16AudioProcessor::loadIRbinary(const char* resourceName, int dataSizeInBytes, size_t resourceSize)
+{
+    const void* sourceData = BinaryData::getNamedResource(resourceName, dataSizeInBytes);
+
+    irLoader.reset(); // clears the buffer for next ir file
+    irLoader.loadImpulseResponse(sourceData, resourceSize, juce::dsp::Convolution::Stereo::yes, juce::dsp::Convolution::Trim::no, 0, juce::dsp::Convolution::Normalise::no);
+
+}
+
+
+
 
 //==============================================================================
 // This creates new instances of the plugin..

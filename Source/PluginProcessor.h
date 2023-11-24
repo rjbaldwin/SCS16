@@ -9,7 +9,7 @@
 //==============================================================================
 /**
 */
-class SC16AudioProcessor  : public juce::AudioProcessor
+class SC16AudioProcessor  : public juce::AudioProcessor, public juce::AudioProcessorValueTreeState::Listener
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
                             #endif
@@ -52,7 +52,26 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    void parameterChanged(const juce::String& parameterID, float newValue) override;
+    float getRMSValue(const int channel) const;
+    void loadIRbinary(const char* resourceName, int dataSizeInBytes, size_t resourceSize);
+
+
+    juce::File root, savedFile;
+    juce::dsp::Convolution irLoader;
+    juce::AudioProcessorValueTreeState treeState;
+
+    // for gain
+    double rawVolume{};
+    // for mix
+    float mix{ 0.0 };
+
 private:
+
+    juce::dsp::ProcessSpec spec;
+    float rmsLevelLeft, rmsLevelRight;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SC16AudioProcessor)
 };
