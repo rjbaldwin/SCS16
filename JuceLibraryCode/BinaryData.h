@@ -12,28 +12,28 @@ namespace BinaryData
     const int            guiBack_1_jpgSize = 22133;
 
     extern const char*   ambience_wav;
-    const int            ambience_wavSize = 1590034;
+    const int            ambience_wavSize = 795058;
 
     extern const char*   hall_wav;
-    const int            hall_wavSize = 1763410;
+    const int            hall_wavSize = 881746;
 
     extern const char*   hall2_wav;
-    const int            hall2_wavSize = 1381798;
+    const int            hall2_wavSize = 690940;
 
     extern const char*   nonlin_wav;
-    const int            nonlin_wavSize = 1523986;
+    const int            nonlin_wavSize = 762034;
 
     extern const char*   plate_wav;
-    const int            plate_wavSize = 1975258;
+    const int            plate_wavSize = 987670;
 
     extern const char*   plate2_wav;
-    const int            plate2_wavSize = 1466194;
+    const int            plate2_wavSize = 733138;
 
     extern const char*   reversed_wav;
-    const int            reversed_wavSize = 1548754;
+    const int            reversed_wavSize = 774418;
 
     extern const char*   room_wav;
-    const int            room_wavSize = 1638190;
+    const int            room_wavSize = 819136;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 9;
