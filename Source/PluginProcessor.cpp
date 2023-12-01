@@ -329,8 +329,9 @@ void SC16AudioProcessor::loadIRbinary(const char* resourceName, int dataSizeInBy
     const void* sourceData = BinaryData::getNamedResource(resourceName, dataSizeInBytes);
 
     irLoader.reset(); // clears the buffer for next ir file
-    irLoader.loadImpulseResponse(sourceData, resourceSize, juce::dsp::Convolution::Stereo::yes, juce::dsp::Convolution::Trim::no, 0, juce::dsp::Convolution::Normalise::yes);
-
+   
+    irLoader.loadImpulseResponse(sourceData, resourceSize, juce::dsp::Convolution::Stereo::yes, juce::dsp::Convolution::Trim::yes, 0, juce::dsp::Convolution::Normalise::yes);
+    
 }
 
 
