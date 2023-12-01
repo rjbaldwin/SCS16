@@ -16,8 +16,8 @@ SC16AudioProcessorEditor::SC16AudioProcessorEditor (SC16AudioProcessor& p)
     gainSlider.setLookAndFeel(&otherLookandFeel);
     gainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 200, 25);
     gainSlider.setValue(-10.0f);
-    gainSlider.setTextValueSuffix(" dB");
-    gainSlider.setRange(-48.0f, 0.0f);
+    gainSlider.setTextValueSuffix(" ");
+    gainSlider.setRange(-48.0f, 10.0f);
     gainSlider.setNumDecimalPlacesToDisplay(1);
     gainSlider.addListener(this);
     gainSliderAttachment = std::make_unique<SliderAttachment>(audioProcessor.treeState, "GAIN", gainSlider);

@@ -229,7 +229,7 @@ void SC16AudioProcessor::setStateInformation (const void* data, int sizeInBytes)
     DBG("XML Content:\n" << xmlState->toString());
 
     //*************************
-    // Extract the value of "IRCHOICE" parameter
+    // Extract the value of "ALGORITHM" parameter
     int irChoice = treeState.getRawParameterValue("ALGORITHM")->load();
 
     // Call the loadIRbinary function based on the extracted value
@@ -280,7 +280,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SC16AudioProcessor::createPa
 
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
-    auto gainParam = std::make_unique<juce::AudioParameterFloat>("GAIN", "Gain", -48.0f, 0.0f, -10.0f);
+    auto gainParam = std::make_unique<juce::AudioParameterFloat>("GAIN", "Gain", -48.0f, 10.0f, -10.0f);
     params.push_back(std::move(gainParam));
 
     auto mixParam = std::make_unique<juce::AudioParameterFloat>("MIX", "Mix", 0.f, 100.0f, 20.0f);
